@@ -59,7 +59,7 @@ namespace WakeMap
             return result;
         }
 
-        static Dictionary<string, Dictionary<string, string>> ParseDictSDictSS(string subObjectString)
+        public Dictionary<string, Dictionary<string, string>> ParseDictSDictSS(string subObjectString)
         {
             Dictionary<string, Dictionary<string, string>> result = new Dictionary<string, Dictionary<string, string>>();
 
@@ -137,7 +137,7 @@ namespace WakeMap
         }
 
         //<string, string>
-        static Dictionary<string, string> ParseDictSS(string jsonString)
+        public Dictionary<string, string> ParseDictSS(string jsonString)
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
 

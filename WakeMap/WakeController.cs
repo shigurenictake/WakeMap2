@@ -683,91 +683,95 @@ namespace WakeMap
             switch (g_scene)
             {
                 case Scene.SceneA:
-                    SelectIgeoms(ref g_dictSelectAWake, ref g_dictAWake, ref g_cfgAWake, ref g_cfgSelectAWake, clickPos);
+                    {
+                        string strjson = null;
+                        SelectIgeoms(ref g_dictSelectAWake, ref g_dictAWake, ref g_cfgAWake, ref g_cfgSelectAWake, ref strjson, clickPos);
 
-                    //mapBoxを再描画
-                    refUserControlMap.mapBox.Refresh();
+                        //mapBoxを再描画
+                        refUserControlMap.mapBox.Refresh();
+                    }
                     break;
 
                 case Scene.SceneB:
-                    isHit = SelectIgeoms(ref g_dictSelectBWake, ref g_dictBWake, ref g_cfgBWake, ref g_cfgSelectBWake, clickPos);
-                    if (isHit) {
-                        //行と時刻範囲を取り出す
-                        int row = -1;
-                        string startTime = null;
-                        string endTime = null;
-                        int i = 0;
-                        //foreach (var key in g_dictSelectBWake)
-                        //{
-                        //    if (key.Key.Contains("info")) //Keyが"info"を含む
-                        //    {
-                        //        row = int.Parse(key.Value["row"]);
-                        //    }
-                        //    if (key.Key.Contains("pos")) //Keyが"info"を含む
-                        //    {
-                        //        if (i == 1)
-                        //        {
-                        //            startTime = key.Value["time"];
-                        //        }
-                        //        if (i == (g_dictSelectBWake.Count - 1))
-                        //        {
-                        //            endTime = key.Value["time"];
-                        //        }
-                        //    }
-                        //    i++;
-                        //}
-
-                        //連動でCPlaceを選択
-                        RowLinkSelect(ref g_dictSelectCPlace, ref g_dictCPlace, ref g_cfgSelectCPlace, row);
-                        //連動でAWakeを選択
-                        TimeLinkSelect(ref g_dictSelectAWake, ref g_dictAWake, ref g_cfgSelectAWake, startTime, endTime);
-                        //連動でDTrackを選択
-                        TimeLinkSelectD(ref g_dictSelectDTrack, ref g_dictDTrack, ref g_cfgSelectDTrack, startTime, endTime);
-
-                        //mapBoxを再描画
-                        refUserControlMap.mapBox.Refresh();
-                        break;
-                    }
-
-                    isHit = SelectPointWake(ref g_dictSelectCPlace, ref g_dictCPlace, ref g_cfgSelectCPlace, clickPos);
-                    if (isHit)
                     {
-                        //行と時刻範囲を取り出す
-                        int row = -1;
-                        string startTime = null;
-                        string endTime = null;
-                        int i = 0;
-                        foreach (var key in g_dictSelectCPlace)
+                        //★いまここ
+
+                        string strjson = null;
+                        isHit = SelectIgeoms(ref g_dictSelectBWake, ref g_dictBWake, ref g_cfgBWake, ref g_cfgSelectBWake, ref strjson, clickPos);
+                        if (isHit)
                         {
-                            if (key.Key.Contains("info")) //Keyが"info"を含む
-                            {
-                                row = int.Parse(key.Value["row"]);
-                            }
-                            if (key.Key.Contains("pos")) //Keyが"info"を含む
-                            {
-                                if (i == 1)
-                                {
-                                    startTime = key.Value["time"];
-                                }
-                                if (i == (g_dictSelectCPlace.Count - 1))
-                                {
-                                    endTime = key.Value["time"];
-                                }
-                            }
-                            i++;
+                            //行と時刻範囲を取り出す
+                            string row = null;
+                            string startTime = null;
+                            string endTime = null;
+                            //int i = 0;
+
+                            Console.WriteLine("行と時刻範囲を取り出す");
+
+                            Dictionary<string, string> dict = new JsonParser().ParseDictSS(strjson);
+                            //foreach (var kvp in dict)
+                            //{
+                            //    Console.WriteLine($"Key:{kvp.Key}, Value:{kvp.Value}");
+                            //}
+                            ////Key: row, Value:1
+                            ////Key: starttime, Value: 20230101001110
+                            ////Key: endtime, Value: 20230101001150
+
+                            row = dict["row"];
+                            startTime = dict["starttime"];
+                            endTime = dict["endtime"];
+
+                            //連動でCPlaceを選択
+                            RowLinkSelect(ref g_dictSelectCPlace, ref g_dictCPlace, ref g_cfgSelectCPlace, int.Parse(row));
+                            //連動でAWakeを選択
+                            TimeLinkSelect(ref g_dictSelectAWake, ref g_dictAWake, ref g_cfgSelectAWake, startTime, endTime);
+                            //連動でDTrackを選択
+                            TimeLinkSelectD(ref g_dictSelectDTrack, ref g_dictDTrack, ref g_cfgSelectDTrack, startTime, endTime);
+
+                            //mapBoxを再描画
+                            refUserControlMap.mapBox.Refresh();
+                            break;
                         }
-                        //連動でBWakeを選択
-                        RowLinkSelect(ref g_dictSelectBWake, ref g_dictBWake, ref g_cfgSelectBWake, row);
-                        //連動でAWakeを選択
-                        TimeLinkSelect(ref g_dictSelectAWake, ref g_dictAWake, ref g_cfgSelectAWake, startTime, endTime);
-                        //連動でDTrackを選択
-                        TimeLinkSelectD(ref g_dictSelectDTrack, ref g_dictDTrack, ref g_cfgSelectDTrack, startTime, endTime);
 
-                        //mapBoxを再描画
-                        refUserControlMap.mapBox.Refresh();
-                        break;
+                        isHit = SelectPointWake(ref g_dictSelectCPlace, ref g_dictCPlace, ref g_cfgSelectCPlace, clickPos);
+                        if (isHit)
+                        {
+                            //行と時刻範囲を取り出す
+                            int row = -1;
+                            string startTime = null;
+                            string endTime = null;
+                            int i = 0;
+                            foreach (var key in g_dictSelectCPlace)
+                            {
+                                if (key.Key.Contains("info")) //Keyが"info"を含む
+                                {
+                                    row = int.Parse(key.Value["row"]);
+                                }
+                                if (key.Key.Contains("pos")) //Keyが"info"を含む
+                                {
+                                    if (i == 1)
+                                    {
+                                        startTime = key.Value["time"];
+                                    }
+                                    if (i == (g_dictSelectCPlace.Count - 1))
+                                    {
+                                        endTime = key.Value["time"];
+                                    }
+                                }
+                                i++;
+                            }
+                            //連動でBWakeを選択
+                            RowLinkSelect(ref g_dictSelectBWake, ref g_dictBWake, ref g_cfgSelectBWake, row);
+                            //連動でAWakeを選択
+                            TimeLinkSelect(ref g_dictSelectAWake, ref g_dictAWake, ref g_cfgSelectAWake, startTime, endTime);
+                            //連動でDTrackを選択
+                            TimeLinkSelectD(ref g_dictSelectDTrack, ref g_dictDTrack, ref g_cfgSelectDTrack, startTime, endTime);
+
+                            //mapBoxを再描画
+                            refUserControlMap.mapBox.Refresh();
+                            break;
+                        }
                     }
-
                     break;
 
                 case Scene.SceneC:
@@ -822,6 +826,7 @@ namespace WakeMap
             ref Dictionary<string, Dictionary<string, Dictionary<string, string>>> refDictWake,
             ref WakeCongfig refWakeCongfig,
             ref WakeCongfig refSelectWakeCongfig,
+            ref string strjson,
             System.Drawing.Point clickPos)
         {
             bool isHit = false;
@@ -876,17 +881,30 @@ namespace WakeMap
 
             //===== 行と時刻範囲を取り出す =====
             {
-                int row = -1;
-                string startTime = null;
-                string endTime = null;
-                int i = 0;
 
-                string strdict = selectIgeoms[0].UserData.ToString();
-                Console.WriteLine("行と時刻範囲を取り出す");
-                Console.WriteLine( strdict );
+                strjson = selectIgeoms[0].UserData.ToString();
+                
+                //int row = -1;
+                //string startTime = null;
+                //string endTime = null;
+                //int i = 0;
 
-                //★今ここ
-                //{ row: 1,starttime: 20230101001110,endtime: 20230101001150}
+                //string strdict = selectIgeoms[0].UserData.ToString();
+                //
+                //Console.WriteLine("行と時刻範囲を取り出す");
+                //
+                //Dictionary<string,string> dict = new JsonParser().ParseDictSS( strdict );
+                //foreach(var kvp in dict)
+                //{
+                //    Console.WriteLine( $"Key:{kvp.Key}, Value:{kvp.Value}" );
+                //}
+                ////Key: row, Value:1
+                ////Key: starttime, Value: 20230101001110
+                ////Key: endtime, Value: 20230101001150
+                //
+                //
+                ////★今ここ
+
             }
 
             return isHit;
