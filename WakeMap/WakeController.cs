@@ -1,6 +1,8 @@
 ﻿using GeoAPI.Geometries;
+using NetTopologySuite.Algorithm;
 using NetTopologySuite.Geometries;
 using SharpMap.Data.Providers;
+using SharpMap.Forms;
 using SharpMap.Layers;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace WakeMap
 {
@@ -388,17 +391,41 @@ namespace WakeMap
                 //wakeを取得
                 foreach (var wake in refDictWake)
                 {
+                    string row = null;
+                    string starttime = null;
+                    string endtime = null;
+                    int cnt = 0;
+                    List<Coordinate> listCoordinats = new List<Coordinate>();
                     //座標を取得
                     foreach (var pos in wake.Value)
                     {
+                        if (pos.Key.Contains("info"))
+                        {
+                            row = pos.Value["row"];
+                        }
                         if (pos.Key.Contains("pos")) //Keyが"pos"を含む
                         {
                             Coordinate coordinate = new Coordinate(double.Parse(pos.Value["x"]), double.Parse(pos.Value["y"]));
-                            refUserControlMap.AddPointToLayer(layername, coordinate);
-                            refUserControlMap.SetStylePointToLayer(layername, refWakeCongfig.pointColor, refWakeCongfig.pointSize);
+                            listCoordinats.Add(coordinate);
+
+                            //UserData作成
+                            if (cnt == 1)
+                            {
+                                starttime = pos.Value["time"];
+                            }
+                            if (cnt == wake.Value.Count - 1)
+                            {
+                                endtime = pos.Value["time"];
+                            }
                         }
+                        cnt++;
                     }
+                    string userdata = "{row:" + row + ",starttime:" + starttime + ",endtime:" + endtime + "}";
+                    Console.WriteLine(userdata);
+                    Coordinate[] coordinates = listCoordinats.ToArray();
+                    refUserControlMap.AddPointToLayer(layername, coordinates, userdata);
                 }
+                refUserControlMap.SetStylePointToLayer(layername, refWakeCongfig.pointColor, refWakeCongfig.pointSize);
             }
 
             //線を追加
@@ -407,32 +434,54 @@ namespace WakeMap
                 //wakeを取得
                 foreach (var wake in refDictWake)
                 {
+                    string row = null;
+                    string starttime = null;
+                    string endtime = null;
+                    int cnt = 0;
                     //座標リストを作成
                     List<Coordinate> listCoordinate = new List<Coordinate>();
                     foreach (var pos in wake.Value)
                     {
+                        if (pos.Key.Contains("info"))
+                        {
+                            row = pos.Value["row"];
+                        }
                         if (pos.Key.Contains("pos")) //Keyが"pos"を含む
                         {
                             Coordinate coordinate = new Coordinate(double.Parse(pos.Value["x"]), double.Parse(pos.Value["y"]));
                             listCoordinate.Add(coordinate);
+
+                            //UserData作成
+                            if (cnt == 1)
+                            {
+                                starttime = pos.Value["time"];
+                            }
+                            if (cnt == wake.Value.Count - 1)
+                            {
+                                endtime = pos.Value["time"];
+                            }
                         }
+                        cnt++;
                     }
                     //配列に変換
                     Coordinate[] coordinates = listCoordinate.ToArray();
+
                     //レイヤーにラインを追加
-                    refUserControlMap.AddLineToLayer(layername, coordinates);
-                    //スタイルを設定
-                    refUserControlMap.SetStyleLineToLayer(layername, refWakeCongfig.lineColor, refWakeCongfig.lineWidth);
-                    //破線を設定
-                    if (refWakeCongfig.isLineDash)
-                    {
-                        refUserControlMap.SetLineDash(layername);
-                    }
-                    //矢印を設定
-                    if (refWakeCongfig.isLineArrow)
-                    {
-                        refUserControlMap.SetLineArrow(layername);
-                    }
+                    string userdata = "{row:" + row + ",starttime:" + starttime + ",endtime:" + endtime + "}";
+                    Console.WriteLine(userdata);
+                    refUserControlMap.AddLineToLayer(layername, coordinates, userdata);
+                }
+                //スタイルを設定
+                refUserControlMap.SetStyleLineToLayer(layername, refWakeCongfig.lineColor, refWakeCongfig.lineWidth);
+                //破線を設定
+                if (refWakeCongfig.isLineDash)
+                {
+                    refUserControlMap.SetLineDash(layername);
+                }
+                //矢印を設定
+                if (refWakeCongfig.isLineArrow)
+                {
+                    refUserControlMap.SetLineArrow(layername);
                 }
             }
 
@@ -485,8 +534,16 @@ namespace WakeMap
                 //wakeを取得
                 foreach (var wake in refDictWake)
                 {
+                    string row = null;
+                    string starttime = null;
+                    string endtime = null;
+                    int cnt = 0;
                     foreach (var pos in wake.Value)
                     {
+                        if (pos.Key.Contains("info"))
+                        {
+                            row = pos.Value["row"];
+                        }
                         if (pos.Key.Contains("pos")) //Keyが"pos"を含む
                         {
                             //開始点の取得
@@ -506,11 +563,25 @@ namespace WakeMap
                             Coordinate end = new Coordinate(x, y);
                             //配列を作成
                             Coordinate[] coordinates = new Coordinate[2] { start, end };
+
+                            //UserData作成
+                            if (cnt == 1)
+                            {
+                                starttime = pos.Value["time"];
+                            }
+                            if (cnt == wake.Value.Count - 1)
+                            {
+                                endtime = pos.Value["time"];
+                            }
+                            string userdata = "{row:" + row + ",starttime:" + starttime + ",endtime:" + endtime + "}";
+                            Console.WriteLine(userdata);
+                            Coordinate[] startcoordinates = new Coordinate[] { start };
                             //レイヤーにポイントを追加
-                            refUserControlMap.AddPointToLayer(layername, start);
+                            refUserControlMap.AddPointToLayer(layername, startcoordinates, userdata);
                             //レイヤーにラインを追加
-                            refUserControlMap.AddLineToLayer(layername, coordinates);
+                            refUserControlMap.AddLineToLayer(layername, coordinates, userdata);
                         }
+                        cnt++;
                     }
                     //スタイルを設定
                     refUserControlMap.SetStylePointToLayer(layername, refWakeCongfig.pointColor, refWakeCongfig.pointSize);
@@ -612,42 +683,49 @@ namespace WakeMap
             switch (g_scene)
             {
                 case Scene.SceneA:
-                    isHit = SelectLineWake(ref g_dictSelectAWake, ref g_dictAWake, ref g_cfgSelectAWake, clickPos);
+                    SelectIgeoms(ref g_dictSelectAWake, ref g_dictAWake, ref g_cfgAWake, ref g_cfgSelectAWake, clickPos);
+
+                    //mapBoxを再描画
+                    refUserControlMap.mapBox.Refresh();
                     break;
 
                 case Scene.SceneB:
-                    isHit = SelectLineWake(ref g_dictSelectBWake, ref g_dictBWake, ref g_cfgSelectBWake, clickPos);
+                    isHit = SelectIgeoms(ref g_dictSelectBWake, ref g_dictBWake, ref g_cfgBWake, ref g_cfgSelectBWake, clickPos);
                     if (isHit) {
                         //行と時刻範囲を取り出す
                         int row = -1;
                         string startTime = null;
                         string endTime = null;
                         int i = 0;
-                        foreach (var key in g_dictSelectBWake)
-                        {
-                            if (key.Key.Contains("info")) //Keyが"info"を含む
-                            {
-                                row = int.Parse(key.Value["row"]);
-                            }
-                            if (key.Key.Contains("pos")) //Keyが"info"を含む
-                            {
-                                if (i == 1)
-                                {
-                                    startTime = key.Value["time"];
-                                }
-                                if (i == (g_dictSelectBWake.Count - 1))
-                                {
-                                    endTime = key.Value["time"];
-                                }
-                            }
-                            i++;
-                        }
+                        //foreach (var key in g_dictSelectBWake)
+                        //{
+                        //    if (key.Key.Contains("info")) //Keyが"info"を含む
+                        //    {
+                        //        row = int.Parse(key.Value["row"]);
+                        //    }
+                        //    if (key.Key.Contains("pos")) //Keyが"info"を含む
+                        //    {
+                        //        if (i == 1)
+                        //        {
+                        //            startTime = key.Value["time"];
+                        //        }
+                        //        if (i == (g_dictSelectBWake.Count - 1))
+                        //        {
+                        //            endTime = key.Value["time"];
+                        //        }
+                        //    }
+                        //    i++;
+                        //}
+
                         //連動でCPlaceを選択
                         RowLinkSelect(ref g_dictSelectCPlace, ref g_dictCPlace, ref g_cfgSelectCPlace, row);
                         //連動でAWakeを選択
                         TimeLinkSelect(ref g_dictSelectAWake, ref g_dictAWake, ref g_cfgSelectAWake, startTime, endTime);
                         //連動でDTrackを選択
                         TimeLinkSelectD(ref g_dictSelectDTrack, ref g_dictDTrack, ref g_cfgSelectDTrack, startTime, endTime);
+
+                        //mapBoxを再描画
+                        refUserControlMap.mapBox.Refresh();
                         break;
                     }
 
@@ -684,6 +762,9 @@ namespace WakeMap
                         TimeLinkSelect(ref g_dictSelectAWake, ref g_dictAWake, ref g_cfgSelectAWake, startTime, endTime);
                         //連動でDTrackを選択
                         TimeLinkSelectD(ref g_dictSelectDTrack, ref g_dictDTrack, ref g_cfgSelectDTrack, startTime, endTime);
+
+                        //mapBoxを再描画
+                        refUserControlMap.mapBox.Refresh();
                         break;
                     }
 
@@ -723,6 +804,9 @@ namespace WakeMap
                         TimeLinkSelectD(ref g_dictSelectDTrack, ref g_dictDTrack, ref g_cfgSelectDTrack, startTime, endTime);
                         //連動でBWakeを選択
                         TimeLinkSelect(ref g_dictSelectBWake, ref g_dictBWake, ref g_cfgSelectBWake, startTime, endTime);
+
+                        //mapBoxを再描画
+                        refUserControlMap.mapBox.Refresh();
                         break;
                     }
                     break;
@@ -733,83 +817,78 @@ namespace WakeMap
         }
 
         //航跡を選択する（線）
-        private bool SelectLineWake(
+        private bool SelectIgeoms(
             ref Dictionary<string, Dictionary<string, string>> refDictSelectWake,
             ref Dictionary<string, Dictionary<string, Dictionary<string, string>>> refDictWake,
+            ref WakeCongfig refWakeCongfig,
             ref WakeCongfig refSelectWakeCongfig,
             System.Drawing.Point clickPos)
         {
             bool isHit = false;
+            Collection<IGeometry> selectIgeoms = new Collection<IGeometry>();
 
-            //===== 線と点の当たり判定 =====
+            //===== Geometryの当たり判定 =====
             {
-                foreach (var wake in refDictWake)
+                //レイヤ取得
+                VectorLayer layer = refUserControlMap.sharpMapHelper.GetVectorLayerByName(refUserControlMap.mapBox, refWakeCongfig.layername);
+
+                //クリック点(イメージ座標)から左上5ピクセル、右下5ピクセルのイメージ座標を算出
+                System.Drawing.Point clickPosLeftUp = new System.Drawing.Point(clickPos.X - 5, clickPos.Y - 5);
+                System.Drawing.Point clickPosRightDown = new System.Drawing.Point(clickPos.X + 5, clickPos.Y + 5);
+
+                //地理座標に変換
+                Coordinate coordinate1 = refUserControlMap.mapBox.Map.ImageToWorld(clickPosLeftUp);
+                Coordinate coordinate2 = refUserControlMap.mapBox.Map.ImageToWorld(clickPosRightDown);
+
+                //経度 緯度を取得
+                double x1 = coordinate1.X;
+                double x2 = coordinate2.X;
+                double y1 = coordinate1.Y;
+                double y2 = coordinate2.Y;
+
+                //ジオメトリの当たり判定
+                //指定した領域のジオメトリを返す Envelope( x1 , x2 , y1, y2)
+                Collection<IGeometry> igeoms =
+                    layer.DataSource.GetGeometriesInView(
+                        new GeoAPI.Geometries.Envelope(x1, x2, y1, y2)
+                    );
+
+                //ジオメトリの情報を取得
+                if (igeoms.Count > 0)
                 {
-                    //座標リストを作成
-                    List<Coordinate> listCoordinate = new List<Coordinate>();
-                    foreach (var pos in wake.Value)
-                    {
-                        if (pos.Key.Contains("pos")) //Keyが"pos"を含む
-                        {
-                            Coordinate coordinate = new Coordinate(double.Parse(pos.Value["x"]), double.Parse(pos.Value["y"]));
-                            listCoordinate.Add(coordinate);
-                        }
-                    }
-                    //線の数ループ
-                    for (int i = 1; i < listCoordinate.Count; i++)
-                    {
-                        //線と点の距離を計算
-                        System.Drawing.Point start = refUserControlMap.TransPosWorldToImage(listCoordinate[i - 1]);
-                        System.Drawing.Point end = refUserControlMap.TransPosWorldToImage(listCoordinate[i]);
-                        int distance = DistancePointToLine(start, end, clickPos);
-                        //衝突判定
-                        if (distance < 5)
-                        {
-                            //選択用ディクショナリーに代入
-                            refDictSelectWake = wake.Value;
-                            isHit = true;
-                            break;
-                        }
-                    }
-                    if (isHit) { break; }
+                    selectIgeoms = igeoms;
+                    isHit = true;
                 }
             }
 
-            //===== 線の描画 =====
+            //===== 描画 =====
             {
                 if (isHit)
                 {
                     //レイヤ取得(参照)
                     VectorLayer layer = refUserControlMap.sharpMapHelper.GetVectorLayerByName(refUserControlMap.mapBox, refSelectWakeCongfig.layername);
-                    //空のジオメトリ生成
-                    Collection<IGeometry> igeoms = new Collection<IGeometry>();
-                    //図形生成クラス
-                    GeometryFactory gf = new GeometryFactory();
-                    //座標リストを作成
-                    List<Coordinate> listCoordinate = new List<Coordinate>();
-                    foreach (var pos in refDictSelectWake)
-                    {
-                        if (pos.Key.Contains("pos")) //Keyが"pos"を含む
-                        {
-                            Coordinate coordinate = new Coordinate(double.Parse(pos.Value["x"]), double.Parse(pos.Value["y"]));
-                            listCoordinate.Add(coordinate);
-                        }
-                    }
-                    //配列に変換
-                    Coordinate[] coordinates = listCoordinate.ToArray();
-                    //線をジオメトリに追加
-                    igeoms.Add(gf.CreateLineString(coordinates));
+
                     //ジオメトリをレイヤに反映
-                    GeometryProvider gpro = new GeometryProvider(igeoms);
+                    GeometryProvider gpro = new GeometryProvider(selectIgeoms);
                     layer.DataSource = gpro;
-                    //レイヤのインデックスを取得
-                    int index = refUserControlMap.mapBox.Map.Layers.IndexOf(layer);
-                    //レイヤを更新
-                    refUserControlMap.mapBox.Map.Layers[index] = layer;
-                    //mapBoxを再描画
-                    refUserControlMap.mapBox.Refresh();
                 }
             }
+
+            //===== 行と時刻範囲を取り出す =====
+            {
+                int row = -1;
+                string startTime = null;
+                string endTime = null;
+                int i = 0;
+
+                string strdict = selectIgeoms[0].UserData.ToString();
+                Console.WriteLine("行と時刻範囲を取り出す");
+                Console.WriteLine( strdict );
+
+                //★今ここ
+                //{ row: 1,starttime: 20230101001110,endtime: 20230101001150}
+            }
+
             return isHit;
         }
 

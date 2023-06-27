@@ -174,7 +174,7 @@ namespace WakeMap
         //}
 
         //指定レイヤにPoint追加
-        public void AddPointToLayer(string layername, Coordinate worldPos)
+        public void AddPointToLayer(string layername, Coordinate[] worldPos, string userdata)
         {
             //レイヤ取得
             VectorLayer layer = sharpMapHelper.GetVectorLayerByName(mapBox, layername);
@@ -182,7 +182,9 @@ namespace WakeMap
             Collection<IGeometry> igeoms = sharpMapHelper.GetIGeometrysAll(layer);
             //点をジオメトリに追加
             GeometryFactory gf = new GeometryFactory();
-            igeoms.Add(gf.CreatePoint(worldPos));
+            IMultiPoint ipoint = gf.CreateMultiPointFromCoords(worldPos);
+            ipoint.UserData = userdata;
+            igeoms.Add(ipoint);
             //ジオメトリをレイヤに反映
             GeometryProvider gpro = new GeometryProvider(igeoms);
             layer.DataSource = gpro;
@@ -195,7 +197,7 @@ namespace WakeMap
         }
 
         //ラインを追加
-        public void AddLineToLayer(string layername, Coordinate[] coordinates)
+        public void AddLineToLayer(string layername, Coordinate[] coordinates, string userdata)
         {
             //Coordinate[]の例
             //Coordinate[] coordinates = new Coordinate[]{
@@ -212,7 +214,9 @@ namespace WakeMap
             //図形生成クラス
             GeometryFactory gf = new GeometryFactory();
             //座標リストの線を生成し、ジオメトリのコレクションに追加
-            igeoms.Add(gf.CreateLineString(coordinates));
+            ILineString ilinestring = gf.CreateLineString(coordinates);
+            ilinestring.UserData = userdata;
+            igeoms.Add(ilinestring);
 
             //ジオメトリをレイヤに反映
             GeometryProvider gpro = new GeometryProvider(igeoms);
