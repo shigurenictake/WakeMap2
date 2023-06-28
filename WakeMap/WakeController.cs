@@ -149,7 +149,7 @@ namespace WakeMap
                     g_cfgSelectAWake.pointColor = System.Drawing.Brushes.Orange;
 
                     //Mapに描画する
-                    DrawLineWake(ref g_dictAWake, ref g_labelListAWake, ref g_cfgAWake);
+                    GenerateWakeLayer(ref g_dictAWake, ref g_labelListAWake, ref g_cfgAWake);
 
                     //空(から)の選択用レイヤを生成
                     GenerateSelectLayer(ref g_cfgSelectAWake);
@@ -157,10 +157,10 @@ namespace WakeMap
                     break;
                 case Scene.SceneB:
                     //Mapに描画する
-                    DrawLineWake(ref g_dictAWake, ref g_labelListAWake, ref g_cfgAWake);
-                    DrawLineWake(ref g_dictDTrack, ref g_labelListDTrack, ref g_cfgDTrack);
-                    DrawLineWake(ref g_dictBWake, ref g_labelListBWake, ref g_cfgBWake);
-                    DrawLineWake(ref g_dictCPlace, ref g_labelListDummy, ref g_cfgCPlace);
+                    GenerateWakeLayer(ref g_dictAWake, ref g_labelListAWake, ref g_cfgAWake);
+                    GenerateWakeLayer(ref g_dictDTrack, ref g_labelListDTrack, ref g_cfgDTrack);
+                    GenerateWakeLayer(ref g_dictBWake, ref g_labelListBWake, ref g_cfgBWake);
+                    GenerateWakeLayer(ref g_dictCPlace, ref g_labelListDummy, ref g_cfgCPlace);
 
                     //空(から)の選択用レイヤを生成
                     GenerateSelectLayer(ref g_cfgSelectAWake);
@@ -182,9 +182,9 @@ namespace WakeMap
                     g_cfgSelectBWake.isLine = false;
 
                     //Mapに描画する
-                    DrawLineWake(ref g_dictAWake, ref g_labelListAWake, ref g_cfgAWake);
-                    DrawLineWake(ref g_dictDTrack, ref g_labelListDTrack, ref g_cfgDTrack);
-                    DrawLineWake(ref g_dictBWake, ref g_labelListBWake, ref g_cfgBWake);
+                    GenerateWakeLayer(ref g_dictAWake, ref g_labelListAWake, ref g_cfgAWake);
+                    GenerateWakeLayer(ref g_dictDTrack, ref g_labelListDTrack, ref g_cfgDTrack);
+                    GenerateWakeLayer(ref g_dictBWake, ref g_labelListBWake, ref g_cfgBWake);
                     DrawArrow(ref g_dictCPlace, ref g_cfgCPlace);
 
                     //空(から)の選択用レイヤを生成
@@ -369,21 +369,20 @@ namespace WakeMap
         }
 
         //描画する
-        private void DrawLineWake(
+        private void GenerateWakeLayer(
             ref Dictionary<string, Dictionary<string, Dictionary<string, string>>> refDictWake,
             ref List<WakeLabel> refWakeLabelList,
             ref WakeCongfig refWakeCongfig
             )
         {
-            string layername = refWakeCongfig.layername;
-
-            //レイヤを生成
-            refUserControlMap.GenerateLayer(layername);
-
             if (refDictWake == null)
             {
                 return;
             }
+            string layername = refWakeCongfig.layername;
+
+            //レイヤを生成
+            refUserControlMap.GenerateLayer(layername);
 
             //点を追加
             if (refWakeCongfig.isPoint)
@@ -852,7 +851,8 @@ namespace WakeMap
                 double y2 = coordinate2.Y;
 
                 //ジオメトリの当たり判定
-                //指定した領域のジオメトリを返す Envelope( x1 , x2 , y1, y2)
+                //指定領域に重なるジオメトリを返す Envelope( x1 , x2 , y1, y2)
+                //図形の領域はIGeometry.EnvelopeInternal{xmin,xmax,ymin,ymax}の四角形となる
                 Collection<IGeometry> igeoms =
                     layer.DataSource.GetGeometriesInView(
                         new GeoAPI.Geometries.Envelope(x1, x2, y1, y2)
@@ -861,8 +861,24 @@ namespace WakeMap
                 //ジオメトリの情報を取得
                 if (igeoms.Count > 0)
                 {
-                    selectIgeoms = igeoms;
-                    isHit = true;
+                    foreach (IGeometry g in igeoms)
+                    {
+                        for(int i = 1; i < g.Coordinates.Count(); i++)
+                        {
+                            //線と点の距離を計算
+                            System.Drawing.Point start = refUserControlMap.TransPosWorldToImage(g.Coordinates[i-1]);
+                            System.Drawing.Point end = refUserControlMap.TransPosWorldToImage(g.Coordinates[i]);
+                            int distance = DistancePointToLine(start, end, clickPos);
+                            //衝突判定
+                            if (distance < 5)
+                            {
+                                //選択用ディクショナリーに代入
+                                selectIgeoms.Add(g); 
+                                isHit = true;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -881,8 +897,10 @@ namespace WakeMap
 
             //===== 行と時刻範囲を取り出す =====
             {
-
-                strjson = selectIgeoms[0].UserData.ToString();
+                if (isHit)
+                {
+                    strjson = selectIgeoms[0].UserData.ToString();
+                }
                 
                 //int row = -1;
                 //string startTime = null;
