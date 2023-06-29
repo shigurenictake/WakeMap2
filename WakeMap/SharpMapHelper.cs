@@ -51,7 +51,7 @@ namespace WakeMap
         /// 範囲:地図全体(経度-180～180, 緯度-90～90で囲まれる四角形)
         /// </summary>
         /// <param name="layer"></param>
-        public Collection<IGeometry> GetIGeometrysAll(VectorLayer layer)
+        public Collection<IGeometry> GetIGeometriesAllByVectorLayer(VectorLayer layer)
         {
             if (layer == null) { return null; }
 
@@ -67,7 +67,7 @@ namespace WakeMap
             //{
             //    //レイヤ内の全ジオメトリを取得
             //    VectorLayer layer = sharpMapHelper.GetVectorLayerByName(mapBox, "pointLayer");
-            //    Collection<IGeometry> igeoms = sharpMapHelper.GetIGeometrysAll( layer );
+            //    Collection<IGeometry> igeoms = sharpMapHelper.GetIGeometriesAllByVectorLayer( layer );
             //    //ジオメトリ一覧を表示
             //    string text = string.Empty;
             //    for (int i = 0; i < igeoms.Count; i++) { text = text + $"[ {i} ] : {igeoms[i]}" + "\n"; }
@@ -124,7 +124,7 @@ namespace WakeMap
             //レイヤ取得
             VectorLayer layer = this.GetVectorLayerByName(mapbox, layername);
             //ジオメトリ取得
-            Collection<IGeometry> igeoms = this.GetIGeometrysAll(layer);
+            Collection<IGeometry> igeoms = this.GetIGeometriesAllByVectorLayer(layer);
 
             //座標を取得し、イメージ座標に変換
             System.Drawing.PointF nowImagePos = mapbox.Map.WorldToImage(nowWorldPos);

@@ -2,22 +2,12 @@
 using NetTopologySuite.Geometries;
 using SharpMap.Data.Providers;
 using SharpMap;
-using SharpMap.Forms;
 using SharpMap.Layers;
-using SharpMap.Styles;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using SharpMap.Rendering.Symbolizer;
-using SharpMap.Drawing;
-using System.Net;
 
 namespace WakeMap
 {
@@ -31,7 +21,6 @@ namespace WakeMap
         //クラス変数
         public Coordinate g_worldPos = new Coordinate();                       //地理座標
         public System.Drawing.Point g_imagePos = new System.Drawing.Point();   //イメージ座標
-
 
         public UserControlMap()
         {
@@ -94,32 +83,6 @@ namespace WakeMap
             mapBox.Map.Layers.Add(layer);
         }
 
-        //レイヤのポイントの色を設定
-        public void SetStylePointToLayer(string layername , System.Drawing.Brush color , float size )
-        {
-            //レイヤ取得(参照)
-            VectorLayer layer = sharpMapHelper.GetVectorLayerByName(mapBox, layername);
-            //ポイントの色を設定
-            layer.Style.PointColor = color;
-            layer.Style.PointSize = size;
-
-            //レイヤを更新
-            //int index = mapBox.Map.Layers.IndexOf(layer);
-            //mapBox.Map.Layers[index] = layer;
-        }
-
-        //レイヤの点の色を設定
-        public void SetStyleLineToLayer(string layername, System.Drawing.Color color, float width)
-        {
-            //レイヤ取得(参照)
-            VectorLayer layer = sharpMapHelper.GetVectorLayerByName(mapBox, layername);
-            //ラインの色を設定
-            layer.Style.Line = new Pen(color, width);
-            //レイヤを更新
-            //int index = mapBox.Map.Layers.IndexOf(layer);
-            //mapBox.Map.Layers[index] = layer;
-        }
-
         ////イベント - 地図上でマウス移動
         private void mapBox_MouseMove(Coordinate worldPos, MouseEventArgs imagePos)
         {
@@ -132,9 +95,8 @@ namespace WakeMap
 
         private void mapBox_Click(object sender, EventArgs e)
         {
-            refWakeController.mapBox_ClickSelect(g_imagePos);
+            refWakeController.ClickSelectWake(g_imagePos);
         }
-
 
         ////イベント - [Pan処理] ラジオボタン「パン」変更時
         //private void radioButtonClickModePan_CheckedChanged(object sender, EventArgs e)
@@ -179,78 +141,57 @@ namespace WakeMap
             //レイヤ取得
             VectorLayer layer = sharpMapHelper.GetVectorLayerByName(mapBox, layername);
             //ジオメトリ取得
-            Collection<IGeometry> igeoms = sharpMapHelper.GetIGeometrysAll(layer);
+            Collection<IGeometry> igeoms = sharpMapHelper.GetIGeometriesAllByVectorLayer(layer);
             //点をジオメトリに追加
             GeometryFactory gf = new GeometryFactory();
             IMultiPoint ipoint = gf.CreateMultiPointFromCoords(worldPos);
             ipoint.UserData = userdata;
+            //ジオメトリのコレクションに追加
             igeoms.Add(ipoint);
             //ジオメトリをレイヤに反映
             GeometryProvider gpro = new GeometryProvider(igeoms);
             layer.DataSource = gpro;
-            //レイヤのインデックスを取得
-            int index = mapBox.Map.Layers.IndexOf(layer);
-            //レイヤを更新
-            mapBox.Map.Layers[index] = layer;
-            //mapBoxを再描画
-            mapBox.Refresh();
         }
 
         //ラインを追加
         public void AddLineToLayer(string layername, Coordinate[] coordinates, string userdata)
         {
-            //Coordinate[]の例
-            //Coordinate[] coordinates = new Coordinate[]{
-            //        new Coordinate(130,30),
-            //        new Coordinate(135,30),
-            //        new Coordinate(135,35),
-            //        new Coordinate(130,35)
-            //    };
-
             //レイヤ取得
             VectorLayer layer = sharpMapHelper.GetVectorLayerByName(mapBox, layername);
             //ジオメトリ取得
-            Collection<IGeometry> igeoms = sharpMapHelper.GetIGeometrysAll(layer);
+            Collection<IGeometry> igeoms = sharpMapHelper.GetIGeometriesAllByVectorLayer(layer);
             //図形生成クラス
             GeometryFactory gf = new GeometryFactory();
             //座標リストの線を生成し、ジオメトリのコレクションに追加
             ILineString ilinestring = gf.CreateLineString(coordinates);
             ilinestring.UserData = userdata;
+            //ジオメトリのコレクションに追加
             igeoms.Add(ilinestring);
-
             //ジオメトリをレイヤに反映
             GeometryProvider gpro = new GeometryProvider(igeoms);
             layer.DataSource = gpro;
-            //レイヤのインデックスを取得
-            int index = mapBox.Map.Layers.IndexOf(layer);
-            //レイヤを更新
-            mapBox.Map.Layers[index] = layer;
         }
 
-        //レイヤの線を破線にする
-        public void SetLineDash(string layername)
+        //PointArrowを追加
+        public void AddPointArrowToLayer(string layername, Coordinate[] coordinates, string userdata)
         {
             //レイヤ取得
             VectorLayer layer = sharpMapHelper.GetVectorLayerByName(mapBox, layername);
-
-            //破線にする { 破線の長さ, 間隔 }
-            layer.Style.Line.DashPattern = new float[] { 3.0F, 3.0F };
-        }
-
-        //レイヤの線を矢印にする
-        public void SetLineArrow(string layername)
-        {
-             //レイヤ取得
-            VectorLayer layer = sharpMapHelper.GetVectorLayerByName(mapBox, layername);
-
-            //矢印にする (width, height, isFilled)
-            layer.Style.Line.CustomEndCap = new System.Drawing.Drawing2D.AdjustableArrowCap(4f, 4f, true);
-        }
-
-        //mapBoxを再描画
-        public void MapBoxRefresh()
-        {
-            mapBox.Refresh();
+            //ジオメトリ取得
+            Collection<IGeometry> igeoms = sharpMapHelper.GetIGeometriesAllByVectorLayer(layer);
+            //図形生成クラス
+            GeometryFactory gf = new GeometryFactory();
+            //PointArrow生成
+            IPoint ipoint = gf.CreatePoint(coordinates[0]);
+            ILineString ilinestring = gf.CreateLineString(coordinates);
+            IGeometry[] igs = new IGeometry[2] { ipoint, ilinestring };
+            IGeometryCollection igeomPointArrow = gf.CreateGeometryCollection(igs);
+            igeomPointArrow.UserData = userdata;
+            //ジオメトリのコレクションに追加
+            igeoms.Add(igeomPointArrow);
+            //ジオメトリをレイヤに反映
+            GeometryProvider gpro = new GeometryProvider(igeoms);
+            layer.DataSource = gpro;
         }
 
         /// <summary>
