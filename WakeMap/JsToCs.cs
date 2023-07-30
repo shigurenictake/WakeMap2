@@ -11,8 +11,8 @@ namespace WakeMap
     [System.Runtime.InteropServices.ComVisible(true)]
     public class JsToCs
     {
-        //WakeControllerクラス参照用
-        public WakeController refWakeController = null;
+        //WakeManagerクラス参照用
+        public WakeManager refWakeManager = null;
 
         //C#_WebViewチェック
         public string CheckCsharpWebView()
@@ -47,7 +47,7 @@ namespace WakeMap
             string strDictCPlace
             )
         {
-            refWakeController.InitWake(
+            refWakeManager.InitWake(
                 scene,
                 strDictAWake,
                 strDictDTrack,

@@ -124,7 +124,7 @@
     <Compile Include="UserControlMap.Designer.cs">
       <DependentUpon>UserControlMap.cs</DependentUpon>
     </Compile>
-    <Compile Include="WakeController.cs" />
+    <Compile Include="WakeManager.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -13,7 +13,7 @@ namespace WakeMap
 {
     public partial class UserControlMap : UserControl
     {
-        public WakeController refWakeController;
+        public WakeManager refWakeManager;
 
         //SharpMap補助クラス
         public SharpMapHelper sharpMapHelper = new SharpMapHelper();
@@ -86,7 +86,6 @@ namespace WakeMap
         ////イベント - 地図上でマウス移動
         private void mapBox_MouseMove(Coordinate worldPos, MouseEventArgs imagePos)
         {
-            //labelに座標表示
             g_worldPos = worldPos;//地理座標系上の座標の更新
             g_imagePos = imagePos.Location;//画面上のイメージ座標の更新
         }
@@ -95,7 +94,7 @@ namespace WakeMap
 
         private void mapBox_Click(object sender, EventArgs e)
         {
-            refWakeController.ClickSelectWake(g_imagePos);
+            refWakeManager.ClickSelectWake(g_imagePos);
         }
 
         ////イベント - [Pan処理] ラジオボタン「パン」変更時
@@ -212,13 +211,6 @@ namespace WakeMap
         public System.Drawing.Point TransPosWorldToImage(Coordinate worldPos)
         {
             return System.Drawing.Point.Round(this.mapBox.Map.WorldToImage(worldPos));
-        }
-
-        //イベント - マップの中心が変更(ZoomやPanによる変更も対象)
-        private void mapBox_MapCenterChanged(Coordinate center)
-        {
-            //ラベルの再配置
-            refWakeController.RelocateLabel();
         }
     }
 }

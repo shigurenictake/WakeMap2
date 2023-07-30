@@ -222,23 +222,23 @@ function InitWake() {
     {\
         arrow1:{\
             primaryKey:{ row: 1, id: 1 },\
-            pos:{ x: 135.615 , y: 38.200 , direction: 120 , distance: 0.4 , 'time': '20230101001110' }\
+            pos1:{ x: 135.615 , y: 38.200 , direction: 120 , distance: 0.4 , 'time': '20230101001110' }\
         },\
         arrow2:{\
             primaryKey:{ row: 2, id: 2 },\
-            pos:{ x: 135.432 , y: 38.800 , direction: 225 , distance: 0.3 , 'time': '20230101001120' }\
+            pos1:{ x: 135.432 , y: 38.800 , direction: 225 , distance: 0.3 , 'time': '20230101001120' }\
         },\
         arrow3:{\
             primaryKey:{ row: 3, id: 3 },\
-            pos:{ x: 134.767 , y: 38.300 , direction:  80 , distance: 0.3 , 'time': '20230101001130' }\
+            pos1:{ x: 134.767 , y: 38.300 , direction:  80 , distance: 0.3 , 'time': '20230101001130' }\
         },\
         arrow4:{\
             primaryKey:{ row: 4, id: 4 },\
-            pos:{ x: 134.534 , y: 39.100 , direction: 290 , distance: 0.2 , 'time': '20230101001140' }\
+            pos1:{ x: 134.534 , y: 39.100 , direction: 290 , distance: 0.2 , 'time': '20230101001140' }\
         },\
         arrow5:{\
             primaryKey:{ row: 5, id: 5 },\
-            pos:{ x: 134.000 , y: 38.400 , direction: 290 , distance: 0.2 , 'time': '20230101001150' }\
+            pos1:{ x: 134.000 , y: 38.400 , direction: 290 , distance: 0.2 , 'time': '20230101001150' }\
         }\
     }\
     ";

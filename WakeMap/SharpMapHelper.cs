@@ -24,13 +24,18 @@ namespace WakeMap
         {
             VectorLayer retlayer = null;
             LayerCollection layers = mapBox.Map.Layers;
-            foreach (VectorLayer layer in layers)
+            for (int i = 0; i< layers.Count;i++)
             {
-                if (layer.LayerName == layername)
+                if (layers[i].GetType().ToString() == "SharpMap.Layers.VectorLayer")
                 {
-                    retlayer = layer;
-                    break;
+                    VectorLayer layer = (VectorLayer)layers[i];
+                    if (layer.LayerName == layername)
+                    {
+                        retlayer = layer;
+                        break;
+                    }
                 }
+
             }
             return retlayer;
 
@@ -171,7 +176,8 @@ namespace WakeMap
             //    if (ishit == true)
             //    {
             //        string txt = $"ヒットしました : [ {index} ] : " + hitIgeome.ToString();
-            //        this.label3.Text = txt;
+            //        this.
+            //        3.Text = txt;
             //    }
             //    else
             //    {

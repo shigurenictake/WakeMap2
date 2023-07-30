@@ -16,8 +16,8 @@ namespace WakeMap
         private CsToJs csToJs = new CsToJs();
         //JsToCsクラス
         private JsToCs jsToCs = new JsToCs();
-        //WakeControllerクラス
-        private WakeController wakeController = new WakeController();
+        //WakeManagerクラス
+        private WakeManager WakeManager = new WakeManager();
 
         //コンストラクタ
         public MainForm(string path)
@@ -31,11 +31,11 @@ namespace WakeMap
             csToJs.webView = this.webView;
             csToJs.refForm = this;
             //JsToCsクラス
-            jsToCs.refWakeController = this.wakeController;
-            //WakeControllerクラス
-            wakeController.refUserControlMap = this.userControlMap;
+            jsToCs.refWakeManager = this.WakeManager;
+            //WakeManagerクラス
+            WakeManager.refUserControlMap = this.userControlMap;
             //UserControlMapクラス
-            this.userControlMap.refWakeController = this.wakeController;
+            this.userControlMap.refWakeManager = this.WakeManager;
         }
 
         //イベント ボタンクリック「詳細へ」
