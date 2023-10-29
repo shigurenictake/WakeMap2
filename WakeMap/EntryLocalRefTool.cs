@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace WakeMap
 {
-    internal static class Program
+    internal static class EntryLocalRefTool
     {
         /// <summary>
         /// アプリケーションのメイン エントリ ポイントです。

@@ -11,9 +11,9 @@ using System.Windows.Forms;
 
 namespace WakeMap
 {
-    public partial class UserControlMap : UserControl
+    public partial class MapController : UserControl
     {
-        public WakeManager refWakeManager;
+        private WakeManager refWakeManager;
 
         //SharpMap補助クラス
         public SharpMapHelper sharpMapHelper = new SharpMapHelper();
@@ -22,12 +22,18 @@ namespace WakeMap
         public Coordinate g_worldPos = new Coordinate();                       //地理座標
         public System.Drawing.Point g_imagePos = new System.Drawing.Point();   //イメージ座標
 
-        public UserControlMap()
+        public MapController()
         {
             InitializeComponent();
 
             //SharpMap初期化
             this.InitializeMap();
+        }
+
+        //参照用
+        public void SetReference(WakeManager wakeManager)
+        {
+            refWakeManager = wakeManager;
         }
 
         //マップ初期化
@@ -56,8 +62,17 @@ namespace WakeMap
 
             //レイヤーの作成
             VectorLayer baseLayer = new VectorLayer("baseLayer");
-            baseLayer.DataSource = new ShapeFile(@"..\..\ShapeFiles\polbnda_jpn\polbnda_jpn.shp");
-            //baseLayer.DataSource = new ShapeFile(@"..\..\ShapeFiles\ne_10m_coastline\ne_10m_coastline.shp");
+
+            try
+            {
+                baseLayer.DataSource = new ShapeFile(@"..\..\ShapeFiles\polbnda_jpn\polbnda_jpn.shp");
+                //baseLayer.DataSource = new ShapeFile(@"..\..\ShapeFiles\ne_10m_coastline\ne_10m_coastline.shp");
+            } catch//(Exception ex)
+            {
+                //開発中はこっち（カレントディレクトリがWakeMap.slnの階層になる）
+                baseLayer.DataSource = new ShapeFile(@".\WakeMap\ShapeFiles\polbnda_jpn\polbnda_jpn.shp");
+                //baseLayer.DataSource = new ShapeFile(@".\WakeMap\ShapeFiles\ne_10m_coastline\ne_10m_coastline.shp");
+            }
 
             baseLayer.Style.Fill = Brushes.LimeGreen;
             baseLayer.Style.Outline = Pens.Black;

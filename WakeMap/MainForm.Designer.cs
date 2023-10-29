@@ -35,7 +35,7 @@
             this.buttonHelp = new System.Windows.Forms.Button();
             this.buttonBack = new System.Windows.Forms.Button();
             this.buttonClose = new System.Windows.Forms.Button();
-            this.userControlMap = new WakeMap.UserControlMap();
+            this.mapController = new WakeMap.MapController();
             this.splitContainerLeftUD = new System.Windows.Forms.SplitContainer();
             this.webView = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.splitContainerLR = new System.Windows.Forms.SplitContainer();
@@ -96,7 +96,7 @@
             // 
             this.splitContainerRightUD.Panel2.AutoScroll = true;
             this.splitContainerRightUD.Panel2.AutoScrollMinSize = new System.Drawing.Size(0, 600);
-            this.splitContainerRightUD.Panel2.Controls.Add(this.userControlMap);
+            this.splitContainerRightUD.Panel2.Controls.Add(this.mapController);
             this.splitContainerRightUD.Size = new System.Drawing.Size(516, 707);
             this.splitContainerRightUD.SplitterDistance = 26;
             this.splitContainerRightUD.SplitterWidth = 1;
@@ -151,13 +151,13 @@
             this.buttonClose.UseVisualStyleBackColor = true;
             this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
             // 
-            // userControlMap
+            // mapController
             // 
-            this.userControlMap.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.userControlMap.Location = new System.Drawing.Point(0, 0);
-            this.userControlMap.Name = "userControlMap";
-            this.userControlMap.Size = new System.Drawing.Size(516, 680);
-            this.userControlMap.TabIndex = 15;
+            this.mapController.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mapController.Location = new System.Drawing.Point(0, 0);
+            this.mapController.Name = "mapController";
+            this.mapController.Size = new System.Drawing.Size(516, 680);
+            this.mapController.TabIndex = 15;
             // 
             // splitContainerLeftUD
             // 
@@ -191,7 +191,6 @@
             this.webView.Size = new System.Drawing.Size(906, 707);
             this.webView.TabIndex = 0;
             this.webView.ZoomFactor = 1D;
-            this.webView.NavigationCompleted += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs>(this.webView_NavigationCompleted);
             // 
             // splitContainerLR
             // 
@@ -250,7 +249,7 @@
         private Microsoft.Web.WebView2.WinForms.WebView2 webView;
         private System.Windows.Forms.SplitContainer splitContainerLR;
         private System.Windows.Forms.Button buttonGoDetail;
-        private UserControlMap userControlMap;
+        private MapController mapController;
     }
 }
 

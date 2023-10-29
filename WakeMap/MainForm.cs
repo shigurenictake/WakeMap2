@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Web.WebView2.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,29 +14,44 @@ namespace WakeMap
     public partial class MainForm : Form
     {
         //CsToJsクラス
-        private CsToJs csToJs = new CsToJs();
+        private CsToJs csToJs = null;
+
         //JsToCsクラス
-        private JsToCs jsToCs = new JsToCs();
+        private JsToCs jsToCs = null;
+        
         //WakeManagerクラス
-        private WakeManager WakeManager = new WakeManager();
+        private WakeManager wakeManager = null;
 
         //コンストラクタ
-        public MainForm(string path)
+        public MainForm(string url , string strJsonArgs = "")
         {
             InitializeComponent();
 
-            //URLを設定
-            this.webView.Source = new Uri(path);
+            //CsToJsクラス生成
+            csToJs = new CsToJs(this, webView);
 
-            //CsToJsクラス
-            csToJs.webView = this.webView;
-            csToJs.refForm = this;
-            //JsToCsクラス
-            jsToCs.refWakeManager = this.WakeManager;
-            //WakeManagerクラス
-            WakeManager.refUserControlMap = this.userControlMap;
-            //UserControlMapクラス
-            this.userControlMap.refWakeManager = this.WakeManager;
+            //JsToCsクラス生成
+            jsToCs =  new JsToCs(this, webView,  strJsonArgs);
+
+            //WakeManagerクラス生成
+            wakeManager = new WakeManager();
+
+            //参照用オブジェクトセット
+            jsToCs.SetReference(csToJs, wakeManager);
+
+            //参照用オブジェクトセット
+            mapController.SetReference(wakeManager);
+
+            //参照用オブジェクトセット
+            wakeManager.SetReference(csToJs, mapController);
+
+            //URLを設定
+            webView.Source = new Uri(url);
+
+
+            webView.NavigationStarting += webView_NavigationStarting;
+            webView.SourceChanged += webView_SourceChanged;
+            webView.NavigationCompleted += webView_NavigationCompleted;
         }
 
         //イベント ボタンクリック「詳細へ」
@@ -62,19 +78,51 @@ namespace WakeMap
             this.Close();
         }
 
-        //イベント WebView2 htmlのロード完了時
+        //イベント WebView2 ロード開始
+        private void webView_NavigationStarting(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs e)
+        {
+            webView.ExecuteScriptAsync("console.log('■MainForm.webView_NavigationStarting');");
+            LaodStarting();
+            webView.ExecuteScriptAsync("console.log('■MainForm.webView_NavigationStarting End');");
+        }
+
+        //イベント WebView2 URL変更時
+        private void webView_SourceChanged(object sender, Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs e)
+        {
+            webView.ExecuteScriptAsync("console.log('■MainForm.webView_SourceChanged');");
+            LaodStarting();
+            webView.ExecuteScriptAsync("console.log('■MainForm.webView_SourceChanged End');");
+        }
+
+        //ロード開始直前処理
+        private void LaodStarting()
+        {
+            try
+            {
+                if (webView.CoreWebView2 != null)
+                {
+                    //ツールフラグ = true 定義をJavaScriptへ送信　※速度重視のためメインフォームから直接送信
+                    webView.ExecuteScriptAsync("const isLocalRefToolRunning = Boolean(1);");
+                    webView.ExecuteScriptAsync("console.log('　isLocalRefToolRunning = ' + isLocalRefToolRunning);");
+
+                    //JavaScriptからC#のメソッドが実行できる様に仕込む
+                    webView.CoreWebView2.AddHostObjectToScript("jsToCs", jsToCs);
+                }
+                else MessageBox.Show("CoreWebView2==null");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        //イベント WebView2 ロード完了
         private void webView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
             try
             {
                 if (webView.CoreWebView2 != null)
                 {
-                    //JavaScriptからC#のメソッドが実行できる様に仕込む
-                    webView.CoreWebView2.AddHostObjectToScript("jsToCs", jsToCs);
-
-                    //C#_WebView判定フラグにtrueをセット
-                    csToJs.SetIsCsharpWebView();
-
                     //URLからファイル名を取得
                     string url = this.webView.Source.ToString();
                     string fimeneme = System.IO.Path.GetFileName(url);

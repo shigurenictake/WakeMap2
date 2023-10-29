@@ -1,6 +1,6 @@
 ﻿namespace WakeMap
 {
-    partial class UserControlMap
+    partial class MapController
     {
         /// <summary> 
         /// 必要なデザイナー変数です。

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace WakeMap
 {
@@ -11,8 +12,45 @@ namespace WakeMap
     [System.Runtime.InteropServices.ComVisible(true)]
     public class JsToCs
     {
+        //参照用メインフォーム
+        private Form refMainForm = null;
+
+        //参照用WebView2
+        private Microsoft.Web.WebView2.WinForms.WebView2 refWebView = null;
+
+        //参照用CsToJs
+        private CsToJs refCsToJs = null;
+
         //WakeManagerクラス参照用
-        public WakeManager refWakeManager = null;
+        private WakeManager refWakeManager = null;
+
+        //JSON文字列の引数
+        private string strJsonArgs = null;
+
+        //コンストラクタ
+        public JsToCs(MainForm mainForm, Microsoft.Web.WebView2.WinForms.WebView2 webView, string strJsonArgs)
+        {
+            this.refMainForm = mainForm;
+            this.refWebView = webView;
+            this.strJsonArgs = strJsonArgs;
+        }
+
+        //参照用インスタンスセット
+        public void SetReference(CsToJs CsToJs, WakeManager wakeManager)
+        {
+            this.refCsToJs = CsToJs;
+            this.refWakeManager = wakeManager;
+        }
+
+        //JSからコール　Init
+        public void Init()
+        {
+            //Console.WriteLine("■JsToCs.Init");
+            refWebView.ExecuteScriptAsync("console.log('■JsToCs.Init');");
+            refCsToJs.TestSendStr("　～てすと　JsToCs.Init()→CsToJs.TestSendStr()処理");
+            refWebView.ExecuteScriptAsync("console.log('■JsToCs.Init End');");
+            //Console.WriteLine("■JsToCs.Init End");
+        }
 
         //C#_WebViewチェック
         public string CheckCsharpWebView()

@@ -14,9 +14,9 @@ namespace WakeMap
 {
     public class WakeManager
     {
-        //他クラス参照用 (初期化は生成元で行う)
-        public UserControlMap refUserControlMap;
-        public CsToJs refCsToJs;
+        //参照用
+        private CsToJs refCsToJs = null;
+        private MapController refUserControlMap = null;
 
         //シーン
         enum Scene {
@@ -59,6 +59,19 @@ namespace WakeMap
         private WakeCongfig g_cfgSelectDTrack = new WakeCongfig();
         private WakeCongfig g_cfgSelectBWake = new WakeCongfig();
         private WakeCongfig g_cfgSelectCPlace = new WakeCongfig();
+
+
+        //コンストラクタ
+        public WakeManager()
+        {
+        }
+
+        //参照用インスタンスセット
+        public void SetReference(CsToJs CsToJs, MapController userControlMap)
+        {
+            this.refUserControlMap = userControlMap;
+            this.refCsToJs = CsToJs;
+        }
 
         /// <summary>
         /// 初期化
@@ -582,6 +595,8 @@ namespace WakeMap
                                 //mapBoxを再描画
                                 refUserControlMap.mapBox.Refresh();
                             }
+
+                            refCsToJs.ClickSelectWake();
 
                             break;
                         }

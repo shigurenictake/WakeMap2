@@ -2,7 +2,26 @@
 
 //C#_WebView判定フラグ(false:未使用 , true:使用)
 //htmlロード後にC#からtrueがセットされる
-var isCsharpWebView = Boolean(0); //初期値=false
+var isLocalRefTool = Boolean(0); //初期値=false
+
+
+window.onload = (event) => {
+    console.log("■common.js　window.onload");
+
+    if (typeof isLocalRefToolRunning !== 'undefined') {
+        console.log('　isLocalRefToolRunning = ' + isLocalRefToolRunning); // 値
+        console.log('　typeof isLocalRefToolRunning = ' + typeof isLocalRefToolRunning); // 型
+
+        isLocalRefTool = Boolean(1); //true
+    } else {
+        console.log("　isLocalRefToolRunningは定義されていません。");
+        isLocalRefTool = Boolean(0); //false
+    }
+
+    Init();
+
+    console.log("■common.js　window.onload end");
+};
 
 //C#からJavaScriptを呼び出す
 function jsFunc1(str1) {
