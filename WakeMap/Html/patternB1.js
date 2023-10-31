@@ -6,6 +6,8 @@ function Init() {
     chrome.webview.hostObjects.reqRx.ReqGetModel();
     chrome.webview.hostObjects.reqRx.ReqGetSearchResult("patternB1の検索条件");
 
+    InitWake();
+
     console.log("■patternB1.html　Init end");
 }
 
@@ -92,7 +94,7 @@ function InitWake() {
     SceneA_strDictAWake  = SceneA_strDictAWake.replaceAll(/\s+/g, '');
 
     //C#の関数の実行
-    chrome.webview.hostObjects.reqRx.InitWake(
+    chrome.webview.hostObjects.reqRx.ReqPatternB1InitWake(
         scene,
         SceneA_strDictAWake,
         null,

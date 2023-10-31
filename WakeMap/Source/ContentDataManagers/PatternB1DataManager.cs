@@ -8,6 +8,11 @@ namespace WakeMap.ContentDataManagers
 {
     internal class PatternB1DataManager : ContentDataManager
     {
+        //
+        WakeManager refWakeManager = null;
+        public void SetRefWakeManager(WakeManager wakeManager) { this.refWakeManager = wakeManager;  }
+
+
         public override void InitData()
         {
             Console.WriteLine("■PatternB1DataManager.InitData");
@@ -25,6 +30,24 @@ namespace WakeMap.ContentDataManagers
             Console.WriteLine("■PatternB1DataManager.GetSearchResult");
             Console.WriteLine($"　～searchCondition = 「{searchCondition}」 ～");
             Console.WriteLine("■PatternB1DataManager.GetSearchResult End");
+        }
+
+        //
+        public void PatternB1InitWake(
+            string scene,
+            string strDictAWake,
+            string strDictDTrack,
+            string strDictBWake,
+            string strDictCPlace
+            )
+        {
+            refWakeManager.InitWake(
+                scene,
+                strDictAWake,
+                strDictDTrack,
+                strDictBWake,
+                strDictCPlace
+                );
         }
     }
 }

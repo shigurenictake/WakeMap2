@@ -66,6 +66,15 @@ namespace WakeMap
             await refWebView.ExecuteScriptAsync(js.ToString());
         }
 
+        //PatternB1操作
+        public async void OperatePatternB1()
+        {
+            System.Text.StringBuilder js = new System.Text.StringBuilder();
+            //詳細へボタンの非表示
+            js.AppendLine("document.getElementById('btn-godetail').style.display='none';");
+            await refWebView.ExecuteScriptAsync(js.ToString());
+        }
+
         //PatternB固有操作
         public async void OperatePatternB()
         {

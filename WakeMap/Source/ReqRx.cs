@@ -23,9 +23,6 @@ namespace WakeMap
         //参照用ReqTx
         private ReqTx refReqTx = null;
 
-        //WakeManagerクラス参照用
-        private WakeManager refWakeManager = null;
-
         //JSON文字列の引数
         private string strArg = null;
 
@@ -38,6 +35,10 @@ namespace WakeMap
         SubPatternADataManager subPatternADataManager = null;
         PatternB1DataManager patternB1DataManager = null;
 
+        //WakeManagerクラス参照用
+        WakeManager wakeManager = null;
+        MapController refMapController = null;
+
         //コンストラクタ
         public ReqRx(MainForm mainForm, Microsoft.Web.WebView2.WinForms.WebView2 webView, string strArg)
         {
@@ -47,10 +48,10 @@ namespace WakeMap
         }
 
         //参照用インスタンスセット
-        public void SetReference(ReqTx reqTx, WakeManager wakeManager)
+        public void SetReference(ReqTx reqTx, MapController mapController)
         {
             this.refReqTx = reqTx;
-            this.refWakeManager = wakeManager;
+            this.refMapController = mapController;
         }
 
         //JSからコール　ReqInit
@@ -77,6 +78,12 @@ namespace WakeMap
                 case "patternB1":
                     patternB1DataManager = new PatternB1DataManager();
                     contentDataManager = patternB1DataManager;
+
+                    wakeManager = new WakeManager();
+                    patternB1DataManager.SetRefWakeManager(wakeManager);
+                    wakeManager.SetReference(refReqTx, refMapController);
+                    refMapController.SetReference(wakeManager);
+
                     break;
                 default:
                     break;
@@ -118,7 +125,25 @@ namespace WakeMap
             string strDictCPlace
             )
         {
-            refWakeManager.InitWake(
+            wakeManager.InitWake(
+                scene,
+                strDictAWake,
+                strDictDTrack,
+                strDictBWake,
+                strDictCPlace
+                );
+        }
+
+        //PatternB1 航跡を初期化
+        public void ReqPatternB1InitWake(
+            string scene,
+            string strDictAWake,
+            string strDictDTrack,
+            string strDictBWake,
+            string strDictCPlace
+            )
+        {
+            patternB1DataManager.PatternB1InitWake(
                 scene,
                 strDictAWake,
                 strDictDTrack,

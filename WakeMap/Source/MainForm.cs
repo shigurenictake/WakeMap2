@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -19,9 +20,6 @@ namespace WakeMap
         //ReqRxクラス
         private ReqRx reqRx = null;
         
-        //WakeManagerクラス
-        private WakeManager wakeManager = null;
-
         //コンストラクタ
         public MainForm(string url , string strArg)
         {
@@ -33,22 +31,13 @@ namespace WakeMap
             //ReqRxクラス生成
             reqRx =  new ReqRx(this, webView,  strArg);
 
-            //WakeManagerクラス生成
-            wakeManager = new WakeManager();
-
             //参照用オブジェクトセット
-            reqRx.SetReference(reqTx, wakeManager);
-
-            //参照用オブジェクトセット
-            mapController.SetReference(wakeManager);
-
-            //参照用オブジェクトセット
-            wakeManager.SetReference(reqTx, mapController);
+            reqRx.SetReference(reqTx, mapController);
 
             //URLを設定
             webView.Source = new Uri(url);
 
-
+            //ロード関連のイベントを登録
             webView.NavigationStarting += webView_NavigationStarting;
             webView.SourceChanged += webView_SourceChanged;
             webView.NavigationCompleted += webView_NavigationCompleted;
@@ -246,8 +235,10 @@ namespace WakeMap
             //固有処理
             switch (fimeneme)
             {
-                case "patternB.html":
                 case "patternB1.html":
+                    reqTx.OperatePatternB1();
+                    break;
+                case "patternB.html":
                 case "patternB2.html":
                 case "patternB3.html":
                     reqTx.OperatePatternB();
@@ -265,7 +256,7 @@ namespace WakeMap
         public void GenerateSubForm(string formname, string url, string strArg)
         {
             //指定した名前のフォームがあれば取得する
-            MainForm subform = this.GetFormByName(formname);
+            MainForm subform = this.GetSubFormByName(formname);
 
             //二重起動防止
             if (subform == null || subform.IsDisposed)
@@ -288,7 +279,7 @@ namespace WakeMap
         }
 
         //指定した名前のFormオブジェクトがあれば取得する
-        public MainForm GetFormByName(string formname)
+        public MainForm GetSubFormByName(string formname)
         {
             MainForm retform = null;
             foreach (MainForm form in Application.OpenForms)

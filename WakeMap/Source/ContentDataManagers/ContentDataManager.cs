@@ -8,11 +8,13 @@ namespace WakeMap
 {
     internal class ContentDataManager
     {
+        //
         public string strArg = null;
 
         public void SetStrArg(string strArg) { this.strArg = strArg; }
         public string GetStrArg() { return this.strArg; }
 
+        //
         public virtual void InitData()
         {
             Console.WriteLine("■ContentDataManager.InitData");
@@ -21,7 +23,7 @@ namespace WakeMap
             Console.WriteLine("■ContentDataManager.InitData End");
         }
 
-
+        //
         public virtual void GetModel()
         {
             Console.WriteLine("■ContentDataManager.GetModel");
@@ -30,7 +32,7 @@ namespace WakeMap
         }
 
 
-
+        //
         public virtual void GetSearchResult(string searchCondition)
         {
             Console.WriteLine("■ContentDataManager.GetSearchResult");
