@@ -260,7 +260,7 @@ function InitWake() {
     switch ( scene ){
         case "SceneA" :
             //C#の関数の実行
-            chrome.webview.hostObjects.jsToCs.InitWake(
+            chrome.webview.hostObjects.reqRx.InitWake(
                 scene,
                 SceneA_strDictAWake,
                 null,
@@ -270,7 +270,7 @@ function InitWake() {
             break;
         case "SceneB" :
             //C#の関数の実行
-            chrome.webview.hostObjects.jsToCs.InitWake(
+            chrome.webview.hostObjects.reqRx.InitWake(
                 scene,
                 SceneB_strDictAWake,
                 SceneB_strDictDTrack,
@@ -280,7 +280,7 @@ function InitWake() {
             break;
         case "SceneC" :
             //C#の関数の実行
-            chrome.webview.hostObjects.jsToCs.InitWake(
+            chrome.webview.hostObjects.reqRx.InitWake(
                 scene,
                 SceneC_strDictAWake,
                 SceneC_strDictDTrack,

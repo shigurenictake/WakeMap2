@@ -5,12 +5,11 @@
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
     <link rel="stylesheet" href="common.css">
     <script language="javascript" type="text/javascript" src="common.js"></script>
-
     <script language="javascript" type="text/javascript">
         function Init(){
             console.log("■topMenu.html　Init");
 
-            chrome.webview.hostObjects.jsToCs.Init();
+            chrome.webview.hostObjects.reqRx.ReqInit("topMenu");
             
             console.log("■topMenu.html　Init end");
         }
@@ -24,8 +23,8 @@
     </div>
     <br>
     <div>
-        <button id="btn-new-win-a" onclick="openNewWindow('./subPatternA.html')">サブウィンドウ(A)</button>
-        <button id="btn-new-win-b" onclick="openNewWindow('./subPatternB.html')">サブウィンドウ(B)</button>
+        <button id="btn-new-win-a" onclick="openSubWindow('./subPatternA.html', 'subPatternAのひきすう')">サブウィンドウ(A)</button>
+        <button id="btn-new-win-b" onclick="openSubWindow('./subPatternB.html', 'subPatternBのひきすう')">サブウィンドウ(B)</button>
         <div>
             htmlのみの時とC#/WebView2使用時で開き方を分岐。<br>
             C#/WebView2では新しいフォーム(ウィンドウ)でページを開く。

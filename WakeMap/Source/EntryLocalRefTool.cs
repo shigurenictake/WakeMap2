@@ -17,7 +17,7 @@ namespace WakeMap
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             string path = System.IO.Path.GetFullPath(@"..\..\html\topMenu.html");
-            Application.Run(new MainForm(path));
+            Application.Run(new MainForm(path, "トップメニューのひきすう"));
         }
     }
 }

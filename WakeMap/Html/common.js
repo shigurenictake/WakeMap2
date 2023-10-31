@@ -38,7 +38,7 @@ function ButtonClick_JsToCs() {
     //テキストボックスから値取得
     const sendtext = document.getElementById('sendtext');
     //C#の関数の実行
-    chrome.webview.hostObjects.jsToCs.JsToCsMethod(sendtext.value);
+    chrome.webview.hostObjects.reqRx.JsToCsMethod(sendtext.value);
 }
 
 //htmlからウィンドウを閉じる
@@ -46,28 +46,28 @@ function closeWindow() {
     window.close();
 }
 
-function openNewWindow(relativePath){
-    if(isCsharpWebView==false){
-        openNewWindowByHtml(relativePath);
+function openSubWindow(relativePath,strArg){
+    if (isLocalRefTool == false){
+        openSubWindowByHtml(relativePath);
     }else{
-        openNewWindowByCs(relativePath);
+        openSubWindowByCs(relativePath, strArg);
     }
 }
 
 //htmlからサブウィンドウを開く
-function openNewWindowByHtml(relativePath) {
+function openSubWindowByHtml(relativePath) {
     window.open(relativePath, "_blank", "width=800,height=300");
 }
 
 //C#からサブウィンドウを開く
-function openNewWindowByCs(relativePath) {
+function openSubWindowByCs(relativePath, strArg) {
     // 現在のURLの情報を取得する
     const currentUrl = new URL(window.location.href);
     // 相対パスをフルパスに変換する
     const fullPath = new URL(relativePath, currentUrl).href;
     console.log(fullPath);
     //C#の関数の実行。htmlを新しいフォームで開く
-    chrome.webview.hostObjects.jsToCs.WindowOpen(fullPath);
+    chrome.webview.hostObjects.reqRx.ReqGenerateSubForm(fullPath, strArg);
 }
 
 //htmlでURL切り替え

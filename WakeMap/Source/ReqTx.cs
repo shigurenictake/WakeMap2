@@ -8,7 +8,7 @@ using System.Windows.Forms;
 namespace WakeMap
 {
     //C#からJavaScriptにアクセス
-    public class CsToJs
+    public class ReqTx
     {
         public int TestCsToJsPubInt = 0;
 
@@ -16,10 +16,10 @@ namespace WakeMap
         private Microsoft.Web.WebView2.WinForms.WebView2 refWebView;
 
         //参照フォーム(初期化は参照元クラスで行う)
-        private Form refMainForm;
+        private MainForm refMainForm;
 
         //コンストラクタ
-        public CsToJs(MainForm mainForm, Microsoft.Web.WebView2.WinForms.WebView2 webView)
+        public ReqTx(MainForm mainForm, Microsoft.Web.WebView2.WinForms.WebView2 webView)
         {
             refMainForm = mainForm;
             refWebView = webView;
@@ -30,9 +30,9 @@ namespace WakeMap
         {
             System.Text.StringBuilder js = new System.Text.StringBuilder();
 
-            js.AppendLine($"console.log('■CsToJs.TestSendStr');");
+            js.AppendLine($"console.log('■ReqTx.TestSendStr');");
             js.AppendLine($"console.log('　{strArg}');");
-            js.AppendLine($"console.log('■CsToJs.TestSendStr End');");
+            js.AppendLine($"console.log('■ReqTx.TestSendStr End');");
 
             await refWebView.ExecuteScriptAsync(js.ToString());
         }

@@ -13,37 +13,37 @@ namespace WakeMap
 {
     public partial class MainForm : Form
     {
-        //CsToJsクラス
-        private CsToJs csToJs = null;
+        //ReqTxクラス
+        private ReqTx reqTx = null;
 
-        //JsToCsクラス
-        private JsToCs jsToCs = null;
+        //ReqRxクラス
+        private ReqRx reqRx = null;
         
         //WakeManagerクラス
         private WakeManager wakeManager = null;
 
         //コンストラクタ
-        public MainForm(string url , string strJsonArgs = "")
+        public MainForm(string url , string strArg)
         {
             InitializeComponent();
 
-            //CsToJsクラス生成
-            csToJs = new CsToJs(this, webView);
+            //ReqTxクラス生成
+            reqTx = new ReqTx(this, webView);
 
-            //JsToCsクラス生成
-            jsToCs =  new JsToCs(this, webView,  strJsonArgs);
+            //ReqRxクラス生成
+            reqRx =  new ReqRx(this, webView,  strArg);
 
             //WakeManagerクラス生成
             wakeManager = new WakeManager();
 
             //参照用オブジェクトセット
-            jsToCs.SetReference(csToJs, wakeManager);
+            reqRx.SetReference(reqTx, wakeManager);
 
             //参照用オブジェクトセット
             mapController.SetReference(wakeManager);
 
             //参照用オブジェクトセット
-            wakeManager.SetReference(csToJs, mapController);
+            wakeManager.SetReference(reqTx, mapController);
 
             //URLを設定
             webView.Source = new Uri(url);
@@ -57,7 +57,7 @@ namespace WakeMap
         //イベント ボタンクリック「詳細へ」
         private void buttonGoDetail_Click(object sender, EventArgs e)
         {
-            csToJs.buttonClickGoDetail();
+            reqTx.buttonClickGoDetail();
         }
 
         //イベント ボタンクリック「戻る」
@@ -106,7 +106,7 @@ namespace WakeMap
                     webView.ExecuteScriptAsync("console.log('　isLocalRefToolRunning = ' + isLocalRefToolRunning);");
 
                     //JavaScriptからC#のメソッドが実行できる様に仕込む
-                    webView.CoreWebView2.AddHostObjectToScript("jsToCs", jsToCs);
+                    webView.CoreWebView2.AddHostObjectToScript("reqRx", reqRx);
                 }
                 else MessageBox.Show("CoreWebView2==null");
             }
@@ -171,9 +171,9 @@ namespace WakeMap
             this.SuspendLayout();
 
             //htmlの閉じるボタンを削除
-            this.csToJs.RemoveCloseBtn();
+            this.reqTx.RemoveCloseBtn();
             //タイトルを設定
-            this.csToJs.SetTitle();
+            this.reqTx.SetTitle();
 
             //右パネルを非表示
             this.splitContainerLR.Panel2Collapsed = true;
@@ -205,7 +205,7 @@ namespace WakeMap
                 case "topMenu.html":
                     break;
                 case "patternA.html":
-                    this.csToJs.OperatePatternA();
+                    this.reqTx.OperatePatternA();
                     break;
                 default:
                     break;
@@ -222,9 +222,9 @@ namespace WakeMap
             this.SuspendLayout();
 
             //htmlの閉じるボタンを削除
-            this.csToJs.RemoveCloseBtn();
+            this.reqTx.RemoveCloseBtn();
             //タイトルを設定
-            this.csToJs.SetTitle();
+            this.reqTx.SetTitle();
 
             //右パネルを表示
             this.splitContainerLR.Panel2Collapsed = false;
@@ -250,7 +250,7 @@ namespace WakeMap
                 case "patternB1.html":
                 case "patternB2.html":
                 case "patternB3.html":
-                    csToJs.OperatePatternB();
+                    reqTx.OperatePatternB();
                     break;
                 default:
                     break;
@@ -258,6 +258,48 @@ namespace WakeMap
 
             //コントロールのレイアウトを再開
             this.ResumeLayout(false);
+        }
+
+
+        //SubForm生成
+        public void GenerateSubForm(string formname, string url, string strArg)
+        {
+            //指定した名前のフォームがあれば取得する
+            MainForm subform = this.GetFormByName(formname);
+
+            //二重起動防止
+            if (subform == null || subform.IsDisposed)
+            {
+                //ヌル、または破棄されていたら、新しいウィンドウで起動する
+                subform = new MainForm(url, strArg);
+                subform.Show();
+                //フォーム名を設定
+                subform.Name = formname;
+            }
+            //フォームにフォーカスを当てる。
+            if (!subform.Visible)
+            {
+                subform.Show();
+            }
+            else
+            {
+                subform.Activate();
+            }
+        }
+
+        //指定した名前のFormオブジェクトがあれば取得する
+        public MainForm GetFormByName(string formname)
+        {
+            MainForm retform = null;
+            foreach (MainForm form in Application.OpenForms)
+            {
+                if (form.Name == formname)
+                {
+                    retform = (MainForm)form;
+                    break;
+                }
+            }
+            return retform;
         }
     }
 }

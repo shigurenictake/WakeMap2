@@ -15,7 +15,7 @@ namespace WakeMap
     public class WakeManager
     {
         //参照用
-        private CsToJs refCsToJs = null;
+        private ReqTx refReqTx = null;
         private MapController refUserControlMap = null;
 
         //シーン
@@ -67,10 +67,10 @@ namespace WakeMap
         }
 
         //参照用インスタンスセット
-        public void SetReference(CsToJs CsToJs, MapController userControlMap)
+        public void SetReference(ReqTx reqTx, MapController userControlMap)
         {
             this.refUserControlMap = userControlMap;
-            this.refCsToJs = CsToJs;
+            this.refReqTx = reqTx;
         }
 
         /// <summary>
@@ -596,7 +596,7 @@ namespace WakeMap
                                 refUserControlMap.mapBox.Refresh();
                             }
 
-                            refCsToJs.ClickSelectWake();
+                            refReqTx.ClickSelectWake();
 
                             break;
                         }

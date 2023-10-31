@@ -5,6 +5,17 @@
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
     <link rel="stylesheet" href="common.css">
     <script language="javascript" type="text/javascript" src="common.js"></script>
+    <script language="javascript" type="text/javascript">
+        function Init() {
+            console.log("■patternA.html　Init()");
+
+            chrome.webview.hostObjects.reqRx.ReqInit("patternA");
+            chrome.webview.hostObjects.reqRx.ReqGetModel();
+            chrome.webview.hostObjects.reqRx.ReqGetSearchResult("patternAの検索条件");
+
+            console.log("■patternA.html　Init() end");
+        }
+    </script>
 </head>
 <body>
     <p><b>patternA.html</b></p>
