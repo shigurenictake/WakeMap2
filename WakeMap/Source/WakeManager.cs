@@ -99,10 +99,10 @@ namespace WakeMap
             JsonParser jsonParser = new JsonParser();
             switch (scene)
             {
-                case "SceneA":
-                    g_scene = Scene.SceneA;
-                    g_dictAWake = jsonParser.ParseDictSDictSDictSS(strDictAWake);
-                    break;
+                //case "SceneA":
+                //    g_scene = Scene.SceneA;
+                //    g_dictAWake = jsonParser.ParseDictSDictSDictSS(strDictAWake);
+                //    break;
                 case "SceneB":
                     g_scene = Scene.SceneB;
                     g_dictAWake = jsonParser.ParseDictSDictSDictSS(strDictAWake);
@@ -124,21 +124,21 @@ namespace WakeMap
             //描画
             switch (g_scene)
             {
-                case Scene.SceneA:
-                    //コンフィグ変更
-                    g_cfgAWake.lineColor = System.Drawing.Color.Red;
-                    g_cfgSelectAWake.pointColor = System.Drawing.Brushes.Orange;
-
-                    //Mapに描画する
-                    GenerateWakeLayer(ref g_dictAWake, ref g_cfgAWake);
-
-                    //空(から)の選択用レイヤを生成
-                    GenerateSelectLayer(ref g_cfgSelectAWake);
-
-                    //mapBoxを再描画
-                    refUserControlMap.mapBox.Refresh();
-
-                    break;
+                //case Scene.SceneA:
+                //    //コンフィグ変更
+                //    g_cfgAWake.lineColor = System.Drawing.Color.Red;
+                //    g_cfgSelectAWake.pointColor = System.Drawing.Brushes.Orange;
+                //
+                //    //Mapに描画する
+                //    GenerateWakeLayer(ref g_dictAWake, ref g_cfgAWake);
+                //
+                //    //空(から)の選択用レイヤを生成
+                //    GenerateSelectLayer(ref g_cfgSelectAWake);
+                //
+                //    //mapBoxを再描画
+                //    refUserControlMap.mapBox.Refresh();
+                //
+                //    break;
                 case Scene.SceneB:
                     //ラベル
                     g_cfgAWake.isLabel = false;
@@ -194,6 +194,86 @@ namespace WakeMap
                     break;
             }
         }
+
+        /// <summary>
+        /// 初期化
+        /// </summary>
+        /// <param name="scene"></param>
+        /// <param name="dictAWake"></param>
+        public void InitWakeB1()
+        {
+            //mapBoxの初期化
+            refUserControlMap.InitLayerOtherThanBase();
+
+            //コンフィグを初期化
+            InitWakeConfig();
+
+            //SceneA ============================================================================
+            g_scene = Scene.SceneA;
+            g_dictAWake = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>
+            {
+                {
+                    "aWake1",
+                    new Dictionary<string, Dictionary<string, string>> {
+                        { "info", new Dictionary<string, string> { { "row", "1" }, { "id", "1" } } },
+                        { "pos1", new Dictionary<string, string> { { "x", "120.007" }, { "y", "35.846" }, { "time", "20230101001111" } } },
+                        { "pos2", new Dictionary<string, string> { { "x", "124.496" }, { "y", "33.370" }, { "time", "20230101001122" } } },
+                        { "pos3", new Dictionary<string, string> { { "x", "121.259" }, { "y", "31.974" }, { "time", "20230101001133" } } },
+                        { "pos4", new Dictionary<string, string> { { "x", "123.925" }, { "y", "30.197" }, { "time", "20230101001144" } } }
+                    }
+                },
+                {
+                    "aWake2",
+                    new Dictionary<string, Dictionary<string, string>>
+                    {
+                        { "info", new Dictionary<string, string> { { "row", "2" }, { "id", "2" } } },
+                        { "pos1", new Dictionary<string, string> { { "x", "136.700" }, { "y", "39.000" }, { "time", "20230101001100" } } },
+                        { "pos2", new Dictionary<string, string> { { "x", "136.200" }, { "y", "39.000" }, { "time", "20230101001110" } } },
+                        { "pos3", new Dictionary<string, string> { { "x", "135.500" }, { "y", "38.600" }, { "time", "20230101001120" } } },
+                        { "pos4", new Dictionary<string, string> { { "x", "134.800" }, { "y", "38.500" }, { "time", "20230101001130" } } },
+                        { "pos5", new Dictionary<string, string> { { "x", "134.200" }, { "y", "38.800" }, { "time", "20230101001140" } } },
+                        { "pos6", new Dictionary<string, string> { { "x", "133.800" }, { "y", "38.800" }, { "time", "20230101001150" } } },
+                        { "pos7", new Dictionary<string, string> { { "x", "133.572" }, { "y", "39.781" }, { "time", "20230101001200" } } },
+                        { "pos8", new Dictionary<string, string> { { "x", "136.238" }, { "y", "40.479" }, { "time", "20230101001300" } } },
+                        { "pos9", new Dictionary<string, string> { { "x", "134.080" }, { "y", "41.495" }, { "time", "20230101001400" } } }
+                    }
+                },
+                {
+                    "aWake3",
+                    new Dictionary<string, Dictionary<string, string>>
+                    {
+                        { "info", new Dictionary<string, string> { { "row", "3" }, { "id", "3" } } },
+                        { "pos1", new Dictionary<string, string> { { "x", "143.855" }, { "y", "34.703" }, { "time", "20230102001111" } } },
+                        { "pos2", new Dictionary<string, string> { { "x", "145.505" }, { "y", "33.307" }, { "time", "20230102001122" } } },
+                        { "pos3", new Dictionary<string, string> { { "x", "143.030" }, { "y", "32.545" }, { "time", "20230102001133" } } },
+                        { "pos4", new Dictionary<string, string> { { "x", "145.378" }, { "y", "31.276" }, { "time", "20230102001144" } } }
+                    }
+                }
+            };
+
+            //描画
+            switch (g_scene)
+            {
+                case Scene.SceneA:
+                    //コンフィグ変更
+                    g_cfgAWake.lineColor = System.Drawing.Color.Red;
+                    g_cfgSelectAWake.pointColor = System.Drawing.Brushes.Orange;
+
+                    //Mapに描画する
+                    GenerateWakeLayer(ref g_dictAWake, ref g_cfgAWake);
+
+                    //空(から)の選択用レイヤを生成
+                    GenerateSelectLayer(ref g_cfgSelectAWake);
+
+                    //mapBoxを再描画
+                    refUserControlMap.mapBox.Refresh();
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
 
         //コンフィグを初期化
         private void InitWakeConfig()

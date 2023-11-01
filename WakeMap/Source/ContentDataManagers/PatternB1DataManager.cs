@@ -33,21 +33,11 @@ namespace WakeMap.ContentDataManagers
         }
 
         //
-        public void PatternB1InitWake(
-            string scene,
-            string strDictAWake,
-            string strDictDTrack,
-            string strDictBWake,
-            string strDictCPlace
-            )
+        public void PatternB1InitWake()
         {
-            refWakeManager.InitWake(
-                scene,
-                strDictAWake,
-                strDictDTrack,
-                strDictBWake,
-                strDictCPlace
-                );
+            //string scene = "SceneA";
+
+            refWakeManager.InitWakeB1();
         }
     }
 }

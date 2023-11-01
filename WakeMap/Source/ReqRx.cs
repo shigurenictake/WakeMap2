@@ -135,21 +135,9 @@ namespace WakeMap
         }
 
         //PatternB1 航跡を初期化
-        public void ReqPatternB1InitWake(
-            string scene,
-            string strDictAWake,
-            string strDictDTrack,
-            string strDictBWake,
-            string strDictCPlace
-            )
+        public void ReqPatternB1InitWake()
         {
-            patternB1DataManager.PatternB1InitWake(
-                scene,
-                strDictAWake,
-                strDictDTrack,
-                strDictBWake,
-                strDictCPlace
-                );
+            patternB1DataManager.PatternB1InitWake();
         }
     }
 }
